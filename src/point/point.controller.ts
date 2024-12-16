@@ -13,7 +13,8 @@ export class PointController {
     @Get(':id')
     async point(@Param('id') id): Promise<UserPoint> {
         const userId = Number.parseInt(id);
-        return { id: userId, point: 0, updateMillis: Date.now() };
+        const { id: existedUserId, point, updateMillis } = await this.pointService.getPoint(userId);
+        return { id: existedUserId, point, updateMillis };
     }
 
     /**

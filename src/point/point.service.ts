@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PointHistoryTable } from 'src/database/pointhistory.table';
 import { UserPointTable } from 'src/database/userpoint.table';
+import { UserPoint } from './point.model';
 
 @Injectable()
 export class PointService {
@@ -8,4 +9,8 @@ export class PointService {
         private readonly userDb: UserPointTable,
         private readonly historyDb: PointHistoryTable,
     ) {}
+
+    async getPoint(userId: number): Promise<UserPoint> {
+        return await this.userDb.selectById(userId);
+    }
 }
