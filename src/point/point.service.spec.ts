@@ -58,4 +58,42 @@ describe('PointService', () => {
             );
         });
     });
+
+    describe('포인트 충전', () => {
+        it('포인트에 0을 충전시 에러 반환', async () => {
+            await expect(pointService.chargePoint(1, 0)).rejects.toThrow(
+                '포인트에 0을 충전할 수 없다',
+            );
+        });
+
+        it('포인트에 음수로 충전시 에러 반환', async () => {
+            await expect(pointService.chargePoint(1, -20)).rejects.toThrow(
+                '음수로 충전시 예외발생',
+            );
+        });
+
+        it('양의 정수 이외의 Id로 포인트 조회시 에러 반환', async () => {
+            userPointTable.selectById.mockRejectedValue(new Error('올바르지 않은 ID 값 입니다.'));
+
+            await expect(pointService.getPoint(-1)).rejects.toThrow('올바르지 않은 ID 값 입니다.');
+            await expect(pointService.getPoint(0)).rejects.toThrow('올바르지 않은 ID 값 입니다.');
+            await expect(pointService.getPoint(1.1)).rejects.toThrow('올바르지 않은 ID 값 입니다.');
+            await expect(pointService.getPoint(NaN)).rejects.toThrow('올바르지 않은 ID 값 입니다.');
+            await expect(pointService.getPoint(undefined)).rejects.toThrow(
+                '올바르지 않은 ID 값 입니다.',
+            );
+            await expect(pointService.getPoint(null)).rejects.toThrow(
+                '올바르지 않은 ID 값 입니다.',
+            );
+        });
+
+        it('최대 포인트 초과해서 충전시 에러 반환', async () => {
+            const userDefaultPoint: UserPoint = { id: 1, point: 0, updateMillis: Date.now() };
+            userPointTable.selectById.mockResolvedValue(userDefaultPoint);
+
+            await expect(pointService.chargePoint(1, 10100)).rejects.toThrow(
+                '최대 잔고 초과, 포인트 충전 실패',
+            );
+        });
+    });
 });
