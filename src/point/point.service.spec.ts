@@ -72,17 +72,32 @@ describe('PointService', () => {
             );
         });
 
-        it('양의 정수 이외의 Id로 포인트 조회시 에러 반환', async () => {
+        it('음수의 Id로 포인트 조회시 에러 반환', async () => {
             userPointTable.selectById.mockRejectedValue(new Error('올바르지 않은 ID 값 입니다.'));
 
             await expect(pointService.getPoint(-1)).rejects.toThrow('올바르지 않은 ID 값 입니다.');
+        });
+
+        it('Id가 0으로 포인트 조회시 에러 반환', async () => {
+            userPointTable.selectById.mockRejectedValue(new Error('올바르지 않은 ID 값 입니다.'));
+
             await expect(pointService.getPoint(0)).rejects.toThrow('올바르지 않은 ID 값 입니다.');
+        });
+        it('Id가 실수로 포인트 조회시 에러 반환', async () => {
+            userPointTable.selectById.mockRejectedValue(new Error('올바르지 않은 ID 값 입니다.'));
+
             await expect(pointService.getPoint(1.1)).rejects.toThrow('올바르지 않은 ID 값 입니다.');
+        });
+        it('Id가 NaN으로 포인트 조회시 에러 반환', async () => {
+            userPointTable.selectById.mockRejectedValue(new Error('올바르지 않은 ID 값 입니다.'));
+
             await expect(pointService.getPoint(NaN)).rejects.toThrow('올바르지 않은 ID 값 입니다.');
+        });
+
+        it('Id가 Undefined으로 포인트 조회시 에러 반환', async () => {
+            userPointTable.selectById.mockRejectedValue(new Error('올바르지 않은 ID 값 입니다.'));
+
             await expect(pointService.getPoint(undefined)).rejects.toThrow(
-                '올바르지 않은 ID 값 입니다.',
-            );
-            await expect(pointService.getPoint(null)).rejects.toThrow(
                 '올바르지 않은 ID 값 입니다.',
             );
         });
