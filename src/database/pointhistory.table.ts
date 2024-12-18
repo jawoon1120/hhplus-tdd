@@ -7,33 +7,33 @@ import { PointHistory, TransactionType } from 'src/point/point.model';
  */
 @Injectable()
 export class PointHistoryTable {
-    private readonly table: PointHistory[] = [];
-    private cursor = 1;
+  private readonly table: PointHistory[] = [];
+  private cursor = 1;
 
-    insert(
-        userId: number,
-        amount: number,
-        transactionType: TransactionType,
-        updateMillis: number,
-    ): Promise<PointHistory> {
-        return new Promise((r) => {
-            setTimeout(() => {
-                const history: PointHistory = {
-                    id: this.cursor++,
-                    userId: userId,
-                    amount: amount,
-                    type: transactionType,
-                    timeMillis: updateMillis,
-                };
-                this.table.push(history);
-                r(history);
-            }, randomInt(300));
-        });
-    }
+  insert(
+    userId: number,
+    amount: number,
+    transactionType: TransactionType,
+    updateMillis: number,
+  ): Promise<PointHistory> {
+    return new Promise((r) => {
+      setTimeout(() => {
+        const history: PointHistory = {
+          id: this.cursor++,
+          userId: userId,
+          amount: amount,
+          type: transactionType,
+          timeMillis: updateMillis,
+        };
+        this.table.push(history);
+        r(history);
+      }, randomInt(300));
+    });
+  }
 
-    selectAllByUserId(userId: number): Promise<PointHistory[]> {
-        return new Promise((r) => {
-            r(this.table.filter((v) => v.userId == userId));
-        });
-    }
+  selectAllByUserId(userId: number): Promise<PointHistory[]> {
+    return new Promise((r) => {
+      r(this.table.filter((v) => v.userId == userId));
+    });
+  }
 }
