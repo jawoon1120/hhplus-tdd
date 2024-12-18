@@ -34,4 +34,24 @@ export class PointService {
 
         return updatedPoint;
     }
+
+    async usePoint(userId: number, amount: number): Promise<UserPoint> {
+        if (amount < 0) {
+            throw new Error('음수로 포인트를 사용시 예외 발생');
+        }
+        if (amount == 0) {
+            throw new Error('0으로 포인트를 사용시 예외 발생');
+        }
+        if (userId == null || userId == undefined || userId <= 0) {
+            throw new Error('올바르지 않은 ID 값 입니다.');
+        }
+        const userPoint = await this.userDb.selectById(userId);
+        if (userPoint.point - amount < 0) {
+            throw new Error('잔고 부족, 포인트 사용 실패');
+        }
+        const updatedPoint = await this.userDb.insertOrUpdate(userId, userPoint.point - amount);
+        await this.historyDb.insert(userId, amount, TransactionType.USE, Date.now());
+
+        return updatedPoint;
+    }
 }
