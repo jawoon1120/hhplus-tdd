@@ -12,6 +12,9 @@ export class PointService {
     ) {}
 
     async getPoint(userId: number): Promise<UserPoint> {
+        if (userId == null || userId == undefined || userId <= 0) {
+            throw new Error('올바르지 않은 ID 값 입니다.');
+        }
         return await this.userDb.selectById(userId);
     }
 
