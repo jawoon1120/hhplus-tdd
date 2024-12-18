@@ -22,7 +22,7 @@ export class PointService {
         if (userId == null || userId == undefined || userId <= 0) {
             throw new Error('올바르지 않은 ID 값 입니다.');
         }
-        if (amount <= 0) {
+        if (amount < 0) {
             throw new Error('음수로 충전시 예외발생');
         }
         const userPoint = await this.userDb.selectById(userId);
