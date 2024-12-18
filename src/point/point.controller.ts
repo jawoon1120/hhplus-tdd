@@ -22,9 +22,9 @@ export class PointController {
      */
     @Get(':id/histories')
     async history(@Param('id') id): Promise<PointHistory[]> {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const userId = Number.parseInt(id);
-        return [];
+        const pointHistories: PointHistory[] = await this.pointService.getHistory(userId);
+        return pointHistories;
     }
 
     /**
