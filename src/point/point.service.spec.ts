@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { PointService } from './point.service';
 import { UserPointTable } from '../database/userpoint.table';
 import { PointHistoryTable } from '../database/pointhistory.table';
-import { UserPoint } from './point.model';
+import { PointHistory, TransactionType, UserPoint } from './point.model';
 
 describe('PointService', () => {
     let pointService: PointService;
@@ -180,6 +180,46 @@ describe('PointService', () => {
 
             await expect(pointService.usePoint(1, 100)).rejects.toThrow(
                 '잔고 부족, 포인트 사용 실패',
+            );
+        });
+    });
+
+    describe('포인트 충전/이용 내역 조회', () => {
+        it('포인트 충전/이용 내역 조회 성공', async () => {
+            const pointHistory: PointHistory[] = [
+                {
+                    id: 1,
+                    userId: 1,
+                    type: TransactionType.CHARGE,
+                    amount: 1000,
+                    timeMillis: Date.now(),
+                },
+                {
+                    id: 2,
+                    userId: 1,
+                    type: TransactionType.USE,
+                    amount: 1000,
+                    timeMillis: Date.now(),
+                },
+            ];
+            pointHistoryTable.selectAllByUserId.mockResolvedValue(pointHistory);
+
+            const result = await pointService.getHistory(1);
+            expect(result).toEqual(pointHistory);
+        });
+
+        it('음수의 Id로 포인트 조회시 에러 반환', async () => {
+            await expect(pointService.getHistory(-1)).rejects.toThrow(
+                '올바르지 않은 ID 값 입니다.',
+            );
+        });
+
+        it('0인 Id로 포인트 조회시 에러 반환', async () => {
+            await expect(pointService.getHistory(0)).rejects.toThrow('올바르지 않은 ID 값 입니다.');
+        });
+        it('실수인 Id로 포인트 조회시 에러 반환', async () => {
+            await expect(pointService.getHistory(1.1)).rejects.toThrow(
+                '올바르지 않은 ID 값 입니다.',
             );
         });
     });
