@@ -12,7 +12,7 @@ export class PointService {
     ) {}
 
     async getPoint(userId: number): Promise<UserPoint> {
-        if (userId == null || userId == undefined || userId <= 0) {
+        if (userId == null || userId == undefined || !Number.isInteger(userId) || userId <= 0) {
             throw new Error('올바르지 않은 ID 값 입니다.');
         }
         return await this.userDb.selectById(userId);
@@ -22,7 +22,7 @@ export class PointService {
         if (amount == 0) {
             throw new Error('포인트에 0을 충전할 수 없다');
         }
-        if (userId == null || userId == undefined || userId <= 0) {
+        if (userId == null || userId == undefined || !Number.isInteger(userId) || userId <= 0) {
             throw new Error('올바르지 않은 ID 값 입니다.');
         }
         if (amount < 0) {
@@ -45,7 +45,7 @@ export class PointService {
         if (amount == 0) {
             throw new Error('0으로 포인트를 사용시 예외 발생');
         }
-        if (userId == null || userId == undefined || userId <= 0) {
+        if (userId == null || userId == undefined || !Number.isInteger(userId) || userId <= 0) {
             throw new Error('올바르지 않은 ID 값 입니다.');
         }
         const userPoint = await this.userDb.selectById(userId);
