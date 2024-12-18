@@ -43,7 +43,7 @@ export class PointController {
     @Patch(':id/use')
     async use(@Param('id') id, @Body(ValidationPipe) pointDto: PointDto): Promise<UserPoint> {
         const userId = Number.parseInt(id);
-        const amount = pointDto.amount;
-        return { id: userId, point: amount, updateMillis: Date.now() };
+        const updatedPoint = await this.pointService.usePoint(userId, pointDto.amount);
+        return updatedPoint;
     }
 }
