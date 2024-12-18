@@ -111,4 +111,57 @@ describe('PointService', () => {
             );
         });
     });
+
+    describe('포인트 사용', () => {
+        it('포인트 사용 성공', async () => {
+            const userDefaultPoint: UserPoint = { id: 1, point: 1000, updateMillis: Date.now() };
+            userPointTable.selectById.mockResolvedValue(userDefaultPoint);
+
+            const userUpdatedPoint: UserPoint = { id: 1, point: 900, updateMillis: Date.now() };
+            userPointTable.insertOrUpdate.mockResolvedValue(userUpdatedPoint);
+
+            const result = await pointService.usePoint(1, 100);
+            expect(result).toEqual(userUpdatedPoint);
+        });
+
+        it('0 포인트로 충전시 에러 반환', async () => {
+            await expect(pointService.usePoint(1, 0)).rejects.toThrow(
+                '0으로 포인트를 사용시 예외 발생',
+            );
+        });
+
+        it('음수의 포인트로 충전시 에러 반환', async () => {
+            await expect(pointService.usePoint(1, -20)).rejects.toThrow(
+                '음수로 포인트를 사용시 예외 발생',
+            );
+        });
+
+        it('음수의 Id로 포인트 조회시 에러 반환', async () => {
+            await expect(pointService.usePoint(-1, 100)).rejects.toThrow(
+                '올바르지 않은 ID 값 입니다.',
+            );
+        });
+
+        it('0인 Id로 포인트 조회시 에러 반환', async () => {
+            await expect(pointService.usePoint(0, 100)).rejects.toThrow(
+                '올바르지 않은 ID 값 입니다.',
+            );
+        });
+        it('실수인 Id로 포인트 조회시 에러 반환', async () => {
+            userPointTable.selectById.mockRejectedValue(new Error('올바르지 않은 ID 값 입니다.'));
+
+            await expect(pointService.usePoint(1.1, 100)).rejects.toThrow(
+                '올바르지 않은 ID 값 입니다.',
+            );
+        });
+
+        it('잔고 부족시 포인트 사용 실패', async () => {
+            const userDefaultPoint: UserPoint = { id: 1, point: 0, updateMillis: Date.now() };
+            userPointTable.selectById.mockResolvedValue(userDefaultPoint);
+
+            await expect(pointService.usePoint(1, 100)).rejects.toThrow(
+                '잔고 부족, 포인트 사용 실패',
+            );
+        });
+    });
 });
