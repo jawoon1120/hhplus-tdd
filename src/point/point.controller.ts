@@ -1,7 +1,16 @@
-import { Body, Controller, Get, Param, Patch, ValidationPipe } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  UseInterceptors,
+  ValidationPipe,
+} from '@nestjs/common';
 import { PointHistory, UserPoint } from './point.model';
 import { PointBody as PointDto } from './point.dto';
 import { PointService } from './point.service';
+import { UserLockInterceptor } from '../lock/user-lock.interceptor';
 
 @Controller('/point')
 export class PointController {
@@ -31,6 +40,7 @@ export class PointController {
    * TODO - 특정 유저의 포인트를 충전하는 기능을 작성해주세요.
    */
   @Patch(':id/charge')
+  @UseInterceptors(UserLockInterceptor)
   async charge(@Param('id') id, @Body(ValidationPipe) pointDto: PointDto): Promise<UserPoint> {
     const userId = Number.parseInt(id);
     const updatedPoint = await this.pointService.chargePoint(userId, pointDto.amount);
@@ -41,6 +51,7 @@ export class PointController {
    * TODO - 특정 유저의 포인트를 사용하는 기능을 작성해주세요.
    */
   @Patch(':id/use')
+  @UseInterceptors(UserLockInterceptor)
   async use(@Param('id') id, @Body(ValidationPipe) pointDto: PointDto): Promise<UserPoint> {
     const userId = Number.parseInt(id);
     const updatedPoint = await this.pointService.usePoint(userId, pointDto.amount);
