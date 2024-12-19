@@ -20,6 +20,7 @@ export class PointController {
    * TODO - 특정 유저의 포인트를 조회하는 기능을 작성해주세요.
    */
   @Get(':id')
+  @UseInterceptors(UserLockInterceptor)
   async point(@Param('id') id): Promise<UserPoint> {
     const userId = Number.parseInt(id);
     const { id: existedUserId, point, updateMillis } = await this.pointService.getPoint(userId);
@@ -30,6 +31,7 @@ export class PointController {
    * TODO - 특정 유저의 포인트 충전/이용 내역을 조회하는 기능을 작성해주세요.
    */
   @Get(':id/histories')
+  @UseInterceptors(UserLockInterceptor)
   async history(@Param('id') id): Promise<PointHistory[]> {
     const userId = Number.parseInt(id);
     const pointHistories: PointHistory[] = await this.pointService.getHistory(userId);
