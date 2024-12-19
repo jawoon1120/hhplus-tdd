@@ -70,7 +70,10 @@ nodejs에서 비동기 테스크는 libuv 내에서 싱글 스레드인 이벤�
 
 ex) 동시에 요청 2개가 들어오고 각 요청은 3개의 callback 함수를 호출한다고 가정
 
+요청 A : callback1, callback2, callback3
+요청 B : callback1-1, callback2-1, callback3-1
 
+요청 A의 callback함수와 요청 B의 callback함수가 싱글스레드로 동작하는 이벤트 루프를 통해서 thread pool로 callback함수들이 전달되고 이때 같은 리소스에 접근할 경우 동시성 이슈가 발생할 수 있습니다
 
 ### 대안
 외부 인프라 사용을 제외하고 고려했던 대안들을 말씀드리겠습니다
