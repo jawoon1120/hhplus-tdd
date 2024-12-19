@@ -7,31 +7,31 @@ import { UserPoint } from 'src/point/point.model';
  */
 @Injectable()
 export class UserPointTable {
-    private readonly table: Map<number, UserPoint> = new Map();
+  private readonly table: Map<number, UserPoint> = new Map();
 
-    selectById(id: number): Promise<UserPoint> {
-        this.isValidId(id);
-        return new Promise((r) =>
-            setTimeout(() => {
-                r(this.table.get(id) ?? { id: id, point: 0, updateMillis: Date.now() });
-            }, randomInt(200)),
-        );
-    }
+  selectById(id: number): Promise<UserPoint> {
+    this.isValidId(id);
+    return new Promise((r) =>
+      setTimeout(() => {
+        r(this.table.get(id) ?? { id: id, point: 0, updateMillis: Date.now() });
+      }, randomInt(200)),
+    );
+  }
 
-    insertOrUpdate(id: number, amount: number): Promise<UserPoint> {
-        this.isValidId(id);
-        return new Promise((r) =>
-            setTimeout(() => {
-                console.log(`포인트 : ${amount}`);
-                const userPoint = { id: id, point: amount, updateMillis: Date.now() };
-                this.table.set(id, userPoint);
-                r(userPoint);
-            }, randomInt(300)),
-        );
-    }
+  insertOrUpdate(id: number, amount: number): Promise<UserPoint> {
+    this.isValidId(id);
+    return new Promise((r) =>
+      setTimeout(() => {
+        console.log(`포인트 : ${amount}`);
+        const userPoint = { id: id, point: amount, updateMillis: Date.now() };
+        this.table.set(id, userPoint);
+        r(userPoint);
+      }, randomInt(300)),
+    );
+  }
 
-    private isValidId(id: number) {
-        if (Number.isInteger(id) && id > 0) return;
-        throw new Error('올바르지 않은 ID 값 입니다.');
-    }
+  private isValidId(id: number) {
+    if (Number.isInteger(id) && id > 0) return;
+    throw new Error('올바르지 않은 ID 값 입니다.');
+  }
 }
